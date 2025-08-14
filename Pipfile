@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+httpx = "*"
+pydantic = "*"
+uvicorn = "*"
+pydantic-settings = "*"
+aiofile = "*"
+apscheduler = "*"
+
+[dev-packages]
+fastapi = { extras = ["standard"], version = "*" }
