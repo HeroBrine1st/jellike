@@ -72,3 +72,23 @@ At the time of release it hasn't been thoroughly tested.
   If logo is not updated and you see no errors in logs of jellify, try increasing `DELAY_BEFORE_UPLOAD_PLAYLIST_IMAGE_SECONDS` to bigger delay.
   This can be required on slow machines because jellyfin replaces `Primary` image after it completes its generation.
 - You should see your liked tracks inside playlist. If so, installation complete!
+
+# Copyright
+
+```
+Jellike is a Jellyfin sidecar service adding "Liked songs" playlist
+Copyright (C) 2025 HeroBrine1st Erquilenne <jellike-project@herobrine1st.ru>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+```
