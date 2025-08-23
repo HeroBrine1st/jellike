@@ -69,7 +69,7 @@ At the time of release it hasn't been thoroughly tested. It is tested enough to 
   - Item type - check only "Songs"
   - Do not send when message body is empty - check
 - Try adding liked track. You should see created playlist after that and after 5 seconds the logo will be updated.
-  If logo is not updated and you see no errors in logs of jellify, try increasing `DELAY_BEFORE_UPLOAD_PLAYLIST_IMAGE_SECONDS` to bigger delay.
+  If logo is not updated and you see no errors in logs of jellike, try increasing `DELAY_BEFORE_UPLOAD_PLAYLIST_IMAGE_SECONDS` to bigger delay.
   This can be required on slow machines because jellyfin replaces `Primary` image after it completes its generation.
 - You should see your liked tracks inside playlist. If so, installation complete!
 
