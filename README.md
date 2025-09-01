@@ -25,9 +25,9 @@ At the time of release it hasn't been thoroughly tested. It is tested enough to 
 - Configure the jellike:
   - Set `JELLYFIN_URL` to address of jellyfin server
   - Set `DATA_DIR` to directory for data of jellify (it is two files and one of them is ephemeral)
-  - Optionally, set `ORDER` to `REVERSE` if you would like to add tracks to start of liked playlists
+  - Optionally, set `ORDER` to `reverse` if you would like to add tracks to start of liked playlists
   - Optionally, set the port using `PORT` variable and set listen host using `HOST` variable
-  - Optionally, if you already have some sort of liked playlist, you can set `BASE_PLAYLISTS` to `:`-separated pair of `USER_ID=PLAYLIST_ID`. 
+  - Optionally, if you already have some sort of liked playlist, you can set `BASE_PLAYLISTS` to `:`-separated pairs of `USER_ID=PLAYLIST_ID`. 
     Take ids from address bar in browser when respective page is opened.
   The description of all options is available in [config.py](jellike/config.py).
 - You can start it via docker (adding to e.g. docker-compose.yml) or your own way. For example, that's my deployment:
