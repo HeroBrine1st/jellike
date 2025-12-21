@@ -9,8 +9,6 @@ This work:
 - supports healthchecks including tainting on first failure (disables itself and tries to recover each minute)
 - is async!
 
-At the time of release it hasn't been thoroughly tested. It is tested enough to say this works as intended without problems and has multiple safeguards against possible bugs including race condition ones, but was not battle-tested enough to be 100% sure (it works without problems on my deployment, but I don't actively use it yet).
-
 # Installation
 
 - (Only if using `reverse` order) Reverse order works only with PR [jellyfin/jellyfin#13730](https://github.com/jellyfin/jellyfin/pull/13730) applied.
