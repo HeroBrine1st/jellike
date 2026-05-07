@@ -9,26 +9,30 @@ This work:
 - supports healthchecks including tainting on first failure (disables itself and tries to recover each minute)
 - is async!
 
+This service is developed against Jellyfin 10.10.7 but supports 10.11 branch. It could, possibly, support 12.x branch without changes, too, and so on. It's also not exposed to users in any way and can, given an option, be migrated to another service in future or even to native Jellyfin support (although the latter would require a simple script).
+
+The point is, unless it breaks, there won't be any updates, including this README. Anyway it's easy to try! The installation is non-invasive and can be removed at any time by reverting the changes.
+
 # Installation
 
 - (Only if using `reverse` order) Reverse order works only with PR [jellyfin/jellyfin#13730](https://github.com/jellyfin/jellyfin/pull/13730) applied.
   It is applied in Jellyfin 10.11 and can be cleanly applied on v10.10.7 tag.
-- (Optional, but you really should...) Create a service user on your server. Service user owns all playlists created, and because they all are
-  named the same, you will quickly start losing the right one. Also making service user allows for proper read-only semantics on playlists,
-  avoiding additional problems.  
-  This user doesn't need any privileged rights. Add access to music library and allow to keep one session.
+- (Optional, but you really should...) Create a service user on your server. That user owns all playlists created by this service, and because they all are
+  named the same, you will quickly start losing the right one if you use your own user and have multiple users on your server.
+  Also, having a dedicated user allows for proper read-only semantics on playlists, avoiding additional problems.
+  This user doesn't need any privileged rights. Add access to music library and allow to keep one session.  
+  Note that "service user" is not some type of Jellyfin user but a regular user, simply used for a *service*.
 - Use [get_user_token.py](get_user_token.py) with (service) user to get user id and token.
   The token goes into `USER_TOKEN` environment variable and id goes into `USER_ID`.
 - Create API Token (Dashboard -> API Keys). This goes into `API_TOKEN`.
-- Configure the jellike:
-  - Set `JELLYFIN_URL` to address of jellyfin server
-  - Set `DATA_DIR` to directory for data of jellify (it is two files and one of them is ephemeral)
+- Configure the jellike. Config is fairly documented in [config.py](jellike/config.py), but here are the essentials:
+  - Set `JELLYFIN_URL` to base URL of your jellyfin server
+  - Set `DATA_DIR` to a path where jellike will store its state (it is two files and one of them is ephemeral)
   - Optionally, set `ORDER` to `reverse` if you would like to add tracks to start of liked playlists
   - Optionally, set the port using `PORT` variable and set listen host using `HOST` variable
   - Optionally, if you already have some sort of liked playlist, you can set `BASE_PLAYLISTS` to `:`-separated pairs of `USER_ID=PLAYLIST_ID`. 
-    Take ids from address bar in browser when respective page is opened.
-  The description of all options is available in [config.py](jellike/config.py).
-- You can start it via docker (adding to e.g. docker-compose.yml) or your own way. For example, that's my deployment:
+    Take ids from address bar in browser when respective page is opened.  
+- Start the service. Docker Compose example (assuming repo is available at `jellike` folder near `docker-compose.yml`).
   ```yaml
   services:
     jellyfin:
@@ -50,8 +54,9 @@ This work:
         jellyfin:
           condition: service_healthy
   ```
+  After service is started, it will try to catch up on its known users (it knows none) and then start listening on webhook, which is not configured yet. For now, the service is dormant.
 - Install "Webhooks" plugin
-- Create webhook pointing to `/webhook` path of Jellify (e.g. on my deployment it is `http://jellify:8000/webhook`)
+- Create webhook pointing to `/webhook` path of Jellike (e.g. on my deployment it is `http://jellike:8000/webhook`)
   - Template:
     ```
     {{#if_equals SaveReason "UpdateUserRating"}}
@@ -90,3 +95,13 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+
+# Known bugs
+
+There is a very brief period at service startup/recovery after it catched up to updates but isn't started handling requests, found after quickly skimming through code to update README.md file due to natural habit of the developer to spot race conditions in written code.
+
+On startup, it ill do a recovery pass, start up and then do one again after one minute and as such data loss is not that probable if startup is successful. It requires $N>1$ likes by the same user in one minute and then it's $\frac{1}{N!}$ probability on top of that. However, if it not successful, it will do recovery pass after $M \in \mathbb{N}$ minutes (until e.g. jellyfin is available) and then after one hour (recurring each hour if everything's okay) and as such data loss is more probable.
+
+It is both a race condition class bug (startup code, fix is ~4 line changes) and ACID violation class bug (recovery code, non-trivial fix), and not trivial to fix due to inability to make a transactional request from Webhooks plugin.
+
+There's no reports of this bug to ever occur, and it only impacts order of new tracks, but not old ones.
