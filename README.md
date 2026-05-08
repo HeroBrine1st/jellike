@@ -100,7 +100,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 There is a very brief period at service startup/recovery after it catched up to updates but isn't started handling requests, found after quickly skimming through code to update README.md file due to natural habit of the developer to spot race conditions in written code.
 
-On startup, it will do a recovery pass, start up and then do one again after one minute and as such data loss is not that probable if startup is successful. It requires $N>1$ likes by the same user in one minute and then it's $1 - \frac{1}{N!}$ probability on top of that. However, if it not successful, it will do recovery pass after $M \in \mathbb{N}$ minutes (until e.g. jellyfin is available) and then after one hour (recurring each hour if everything's okay) and as such data loss is more probable.
+On startup, it will do a recovery pass, start up and then do one again after one minute and as such data loss is not that probable if startup is successful. It requires $N>1$ likes by the same user in one minute and then it's $1 - \frac{1}{N!}$ probability on top of that. However, if startup is not successful, it will do recovery pass after $M \in \mathbb{N}$ minutes (until e.g. jellyfin is available) and then after one hour (recurring each hour if everything's okay) and as such data loss is more probable.
 
 It is both a race condition class bug (startup code, fix is ~4 line changes) and ACID violation class bug (recovery code, non-trivial fix), and not trivial to fix due to inability to make a transactional request from Webhooks plugin.
 
